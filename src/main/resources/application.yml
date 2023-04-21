@@ -11,20 +11,20 @@ spring:
       max-request-size: 1000MB
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://124.71.65.12:13306/mikania_micrantha_kunth
+    url: jdbc:mysql://xxx:13306/mikania_micrantha_kunth
     username: root
-    password: 6aad3d9cefc9e935
+    password: xxx
   mvc:
     pathmatch:
       matching-strategy: ANT_PATH_MATCHER
   redis:
     port: 7001
-    host: 124.71.65.12
+    host: xxx
     database: 0
-    password: 6aad3d9cefc9e935
+    password: xxx
 oss:
-  accessKeyId: LTAI5tCkdZcR4R8j6ULmsxah
-  accessKeySecret: zPzEb0KUq24usFvLum0RnUUyy5UeFz
+  accessKeyId: xxx
+  accessKeySecret: xxx
   endpoint: oss-cn-guangzhou.aliyuncs.com
   maxConnections: 1024
   maxErrorRetry: 5
@@ -34,6 +34,6 @@ mybatis-plus:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
   global-config:
     db-config:
-      logic-delete-field: isDelete # ????????????(since 3.3.0,????????????2)
-      logic-delete-value: 1 # ??????(??? 1)
-      logic-not-delete-value: 0 # ??????(??? 0)
+      logic-delete-field: isDelete
+      logic-delete-value: 1
+      logic-not-delete-value: 0
