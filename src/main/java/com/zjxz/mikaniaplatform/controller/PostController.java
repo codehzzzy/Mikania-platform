@@ -6,7 +6,11 @@ import com.zjxz.mikaniaplatform.constants.DirectoryName;
 import com.zjxz.mikaniaplatform.enums.BusinessFailCode;
 import com.zjxz.mikaniaplatform.exception.GlobalException;
 import com.zjxz.mikaniaplatform.model.dto.PostInfoAddRequest;
+import com.zjxz.mikaniaplatform.model.dto.PostInfoUploadStatusRequest;
+import com.zjxz.mikaniaplatform.model.dto.PostInfoUploadStatusResponse;
+import com.zjxz.mikaniaplatform.model.entity.PageResult;
 import com.zjxz.mikaniaplatform.model.entity.Result;
+import com.zjxz.mikaniaplatform.model.vo.PostInfoVO;
 import com.zjxz.mikaniaplatform.service.PostInfoService;
 import com.zjxz.mikaniaplatform.util.MyFileUtil;
 import io.swagger.annotations.ApiOperation;
@@ -22,6 +26,7 @@ import javax.validation.constraints.NotEmpty;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import static com.zjxz.mikaniaplatform.util.MultipartFileToFileUtils.multipartFileToFile;
 
@@ -74,10 +79,39 @@ public class PostController {
         return new Result<>().success().message("上传成功").data(url);
     }
 
-    //todo 暴露接口让人工智能调用，获取
+    @ApiOperation("更新帖子状态")
+    @PostMapping("/uploadStatus")
+    public Result uploadStatus(
+            @Parameter(description = "帖子更新请求", required = true)
+            @NotEmpty
+            PostInfoUploadStatusRequest postInfoUploadStatusRequest
+    )
+    {
+        postInfoService.uploadStatus(postInfoUploadStatusRequest);
+        return new Result<>().success().message("更新成功");
+    }
 
-    //todo 分页展示帖子
+    @ApiOperation("获取帖子url")
+    @GetMapping("/getUrl")
+    public Result<List<PostInfoUploadStatusResponse>> getUrl() {
+        List<PostInfoUploadStatusResponse> list = postInfoService.getUrl();
+        return new Result<List<PostInfoUploadStatusResponse>>().success().message("获取成功").data(list);
+    }
 
-    //todo 暴露接口让人工智能调用，获取url
-
+    @ApiOperation("获取帖子信息")
+    @PostMapping("/get/{current}/{size}")
+    public Result<PageResult<PostInfoVO>> get(
+            @PathVariable
+            @Parameter(description = "当前页", required = true)
+            @NotEmpty
+            int current,
+            @PathVariable
+            @Parameter(description = "页容量", required = true)
+            @NotEmpty
+            int size
+    )
+    {
+        PageResult<PostInfoVO> list = postInfoService.get(current, size);
+        return new Result<PageResult<PostInfoVO>>().success().message("获取成功").data(list);
+    }
 }

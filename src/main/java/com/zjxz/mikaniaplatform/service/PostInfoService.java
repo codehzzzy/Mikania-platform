@@ -1,8 +1,15 @@
 package com.zjxz.mikaniaplatform.service;
 
 import com.zjxz.mikaniaplatform.model.dto.PostInfoAddRequest;
+import com.zjxz.mikaniaplatform.model.dto.PostInfoUploadStatusRequest;
+import com.zjxz.mikaniaplatform.model.dto.PostInfoUploadStatusResponse;
+import com.zjxz.mikaniaplatform.model.entity.PageResult;
 import com.zjxz.mikaniaplatform.model.entity.PostInfo;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.zjxz.mikaniaplatform.model.entity.Result;
+import com.zjxz.mikaniaplatform.model.vo.PostInfoVO;
+
+import java.util.List;
 
 /**
 * @author hzzzzzy
@@ -19,4 +26,26 @@ public interface PostInfoService extends IService<PostInfo> {
      * @return 是否成功
      */
     void addPost(PostInfoAddRequest postAddRequest, String url);
+
+    /**
+     * 更新帖子状态
+     *
+     * @param postInfoUploadStatusRequest 帖子添加请求
+     */
+    void uploadStatus(PostInfoUploadStatusRequest postInfoUploadStatusRequest);
+
+    /**
+     * 返回图片/视频url
+     *
+     * @return 对象列表
+     */
+    List<PostInfoUploadStatusResponse> getUrl();
+
+
+    /**
+     * 获取帖子信息
+     *
+     * @return 对象列表
+     */
+    PageResult<PostInfoVO> get(int current, int size);
 }
