@@ -1,26 +1,22 @@
-package com.zjxz.mikaniaplatform.model.entity;
+package com.zjxz.mikaniaplatform.model.dto;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import java.io.Serializable;
-
 import lombok.Builder;
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
- * 用户表
  * @author hzzzzzy
- * @TableName user
+ * @description 存储在ThreadLocal
  */
-@TableName(value ="user")
 @Data
-@Builder
-public class User implements Serializable {
+public class UserDTO implements Serializable {
     /**
      * 用户编号
      */
-    @TableId
     private Integer id;
 
     /**
@@ -32,7 +28,4 @@ public class User implements Serializable {
      * 密码
      */
     private String password;
-
-    @TableField(exist = false)
-    private static final long serialVersionUID = 1L;
 }
