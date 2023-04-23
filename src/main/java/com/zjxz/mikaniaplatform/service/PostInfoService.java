@@ -1,6 +1,7 @@
 package com.zjxz.mikaniaplatform.service;
 
 import com.zjxz.mikaniaplatform.model.dto.PostInfoAddRequest;
+import com.zjxz.mikaniaplatform.model.dto.PostInfoUpdateRequest;
 import com.zjxz.mikaniaplatform.model.dto.PostInfoUploadStatusRequest;
 import com.zjxz.mikaniaplatform.model.dto.PostInfoUploadStatusResponse;
 import com.zjxz.mikaniaplatform.model.entity.PageResult;
@@ -8,6 +9,7 @@ import com.zjxz.mikaniaplatform.model.entity.PostInfo;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zjxz.mikaniaplatform.model.entity.Result;
 import com.zjxz.mikaniaplatform.model.vo.PostInfoVO;
+import com.zjxz.mikaniaplatform.model.vo.UserPostInfoVO;
 
 import java.util.List;
 
@@ -30,9 +32,9 @@ public interface PostInfoService extends IService<PostInfo> {
     /**
      * 更新帖子状态
      *
-     * @param postInfoUploadStatusRequest 帖子添加请求
+     * @param postInfoUploadStatusRequestList 帖子添加请求列表
      */
-    void uploadStatus(PostInfoUploadStatusRequest postInfoUploadStatusRequest);
+    void uploadStatus(List<PostInfoUploadStatusRequest> postInfoUploadStatusRequestList);
 
     /**
      * 返回图片/视频url
@@ -45,7 +47,27 @@ public interface PostInfoService extends IService<PostInfo> {
     /**
      * 获取帖子信息
      *
+     * @param current 当前页
+     * @param size 页面容量
      * @return 对象列表
      */
     PageResult<PostInfoVO> get(int current, int size);
+
+
+    /**
+     * 查看用户帖子
+     *
+     * @param current 当前页
+     * @param size 页面容量
+     * @return 对象列表
+     */
+    PageResult<UserPostInfoVO> getUserPost(int current, int size);
+
+
+    /**
+     * 修改用户帖子
+     *
+     * @param postInfoUpdateRequest 帖子更新请求
+     */
+    void updateUserPost(PostInfoUpdateRequest postInfoUpdateRequest);
 }

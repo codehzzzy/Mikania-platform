@@ -11,20 +11,20 @@ spring:
       max-request-size: 1000MB
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://xxx:13306/mikania_micrantha_kunth
+    url: jdbc:mysql://124.71.65.12:13306/mikania_micrantha_kunth
     username: root
-    password: xxx
+    password: 6aad3d9cefc9e935
   mvc:
     pathmatch:
       matching-strategy: ANT_PATH_MATCHER
   redis:
     port: 7001
-    host: xxx
+    host: 124.71.65.12
     database: 0
-    password: xxx
+    password: 6aad3d9cefc9e935
 oss:
-  accessKeyId: xxx
-  accessKeySecret: xxx
+  accessKeyId: LTAI5tCkdZcR4R8j6ULmsxah
+  accessKeySecret: zPzEb0KUq24usFvLum0RnUUyy5UeFz
   endpoint: oss-cn-guangzhou.aliyuncs.com
   maxConnections: 1024
   maxErrorRetry: 5

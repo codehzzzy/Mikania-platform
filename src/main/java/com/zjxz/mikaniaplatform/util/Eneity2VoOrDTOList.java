@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
  * @create 2023/4/1
  * @description 将EntityList转为对应的VOList
  */
-public class EntityList2VOList {
+public class Eneity2VoOrDTOList {
     public static <Eneity,VO> List<VO> Eneity2VoOrDTO(List<Eneity> eneityList, Class<VO> vo){
         return eneityList.stream().map(item -> BeanUtil.copyProperties(item, vo)).collect(Collectors.toList());
     }

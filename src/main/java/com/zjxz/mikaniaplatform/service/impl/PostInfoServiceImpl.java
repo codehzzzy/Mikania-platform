@@ -6,23 +6,26 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zjxz.mikaniaplatform.constants.Status;
 import com.zjxz.mikaniaplatform.enums.BusinessFailCode;
 import com.zjxz.mikaniaplatform.exception.GlobalException;
+import com.zjxz.mikaniaplatform.mapper.PostInfoMapper;
 import com.zjxz.mikaniaplatform.model.dto.PostInfoAddRequest;
+import com.zjxz.mikaniaplatform.model.dto.PostInfoUpdateRequest;
 import com.zjxz.mikaniaplatform.model.dto.PostInfoUploadStatusRequest;
 import com.zjxz.mikaniaplatform.model.dto.PostInfoUploadStatusResponse;
 import com.zjxz.mikaniaplatform.model.entity.PageResult;
 import com.zjxz.mikaniaplatform.model.entity.PostInfo;
 import com.zjxz.mikaniaplatform.model.entity.Result;
 import com.zjxz.mikaniaplatform.model.vo.PostInfoVO;
+import com.zjxz.mikaniaplatform.model.vo.UserPostInfoVO;
 import com.zjxz.mikaniaplatform.service.PostInfoService;
-import com.zjxz.mikaniaplatform.mapper.PostinfoMapper;
 import com.zjxz.mikaniaplatform.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.zjxz.mikaniaplatform.util.EntityList2VOList.Eneity2VoOrDTO;
+import static com.zjxz.mikaniaplatform.util.Eneity2VoOrDTOList.Eneity2VoOrDTO;
 import static com.zjxz.mikaniaplatform.util.MyBeanUtil.copyProperties;
 import static com.zjxz.mikaniaplatform.util.PageUtil.getPage;
 import static com.zjxz.mikaniaplatform.util.User2ThreadLocalUtils.getUser;
@@ -33,10 +36,11 @@ import static com.zjxz.mikaniaplatform.util.User2ThreadLocalUtils.getUser;
 * @createDate 2023-04-21 16:54:07
 */
 @Service
-public class PostInfoServiceImpl extends ServiceImpl<PostinfoMapper, PostInfo>
+public class PostInfoServiceImpl extends ServiceImpl<PostInfoMapper, PostInfo>
     implements PostInfoService {
     @Autowired
     private UserService userService;
+
 
     @Override
     public void addPost(PostInfoAddRequest postAddRequest, String url) {
@@ -50,39 +54,78 @@ public class PostInfoServiceImpl extends ServiceImpl<PostinfoMapper, PostInfo>
         }
     }
 
+
     @Override
-    public void uploadStatus(PostInfoUploadStatusRequest postInfoUploadStatusRequest) {
-        var postInfo = copyProperties(postInfoUploadStatusRequest, PostInfo.class);
-        boolean flag = this.updateById(postInfo);
+    public void uploadStatus(List<PostInfoUploadStatusRequest> postInfoUploadStatusRequestList) {
+        var postInfoList = new ArrayList<PostInfo>();
+        postInfoUploadStatusRequestList.stream().peek(request->{
+            PostInfo postInfo = copyProperties(request, PostInfo.class);
+            postInfoList.add(postInfo);
+        });
+        var flag = this.updateBatchById(postInfoList);
         if (flag){
-            throw new GlobalException(new Result<>().error(BusinessFailCode.PARAMETER_ERROR).message("帖子更新失败"));
+            throw new GlobalException(new Result<>().error(BusinessFailCode.PARAMETER_ERROR).message("帖子添加失败"));
         }
     }
+
 
     @Override
     public List<PostInfoUploadStatusResponse> getUrl() {
-        LambdaQueryWrapper<PostInfo> queryWrapper = new LambdaQueryWrapper<>();
+        var queryWrapper = new LambdaQueryWrapper<PostInfo>();
         queryWrapper.eq(PostInfo::getStatus,0);
-        List<PostInfo> postInfoList = this.list(queryWrapper);
+        var postInfoList = this.list(queryWrapper);
         if (BeanUtil.isEmpty(postInfoList)){
             throw new GlobalException(new Result<>().error(BusinessFailCode.DATA_FETCH_ERROR).message("帖子url获取失败"));
         }
-        List<PostInfoUploadStatusResponse> list = Eneity2VoOrDTO(postInfoList, PostInfoUploadStatusResponse.class);
+        var list = Eneity2VoOrDTO(postInfoList, PostInfoUploadStatusResponse.class);
         return list;
     }
 
+
     @Override
     public PageResult<PostInfoVO> get(int current, int size) {
-        List<PostInfo> postInfoList = this.list();
-        List<PostInfoVO> tempList = Eneity2VoOrDTO(postInfoList, PostInfoVO.class);
-        List<PostInfoVO> list = tempList.stream().peek(item -> {
-            String username = userService.getById(item.getUserId()).getUsername();
+        var postInfoList = this.list();
+        var tempList = Eneity2VoOrDTO(postInfoList, PostInfoVO.class);
+        var list = tempList.stream().peek(item -> {
+            var username = userService.getById(item.getUserId()).getUsername();
             item.setUsername(username);
         }).collect(Collectors.toList());
-        PageResult<PostInfoVO> result = getPage(list, current, size);
+        var result = getPage(list, current, size);
         if (BeanUtil.isEmpty(result)){
             throw new GlobalException(new Result<>().error(BusinessFailCode.DATA_FETCH_ERROR).message("帖子列表获取失败"));
         }
         return result;
+    }
+
+
+    @Override
+    public PageResult<UserPostInfoVO> getUserPost(int current, int size) {
+        var postInfoList = this.list(
+                new LambdaQueryWrapper<PostInfo>().eq(PostInfo::getUserId, getUser().getId())
+        );
+        // 封装为VO
+        var userPostVoList = Eneity2VoOrDTO(postInfoList, UserPostInfoVO.class);
+        var result = getPage(userPostVoList, current, size);
+        if (BeanUtil.isEmpty(result)){
+            throw new GlobalException(new Result<>().error(BusinessFailCode.DATA_FETCH_ERROR).message("帖子列表获取失败"));
+        }
+        return result;
+    }
+
+
+    @Override
+    public void updateUserPost(PostInfoUpdateRequest postInfoUpdateRequest) {
+        String url = postInfoUpdateRequest.url();
+        PostInfo postInfo = this.getOne(
+                new LambdaQueryWrapper<PostInfo>().eq(PostInfo::getId, postInfoUpdateRequest.id())
+        );
+        if (!postInfo.getUrl().equals(url)) {
+            postInfo.setStatus(Status.WAIT);
+            postInfo.setUrl(url);
+            boolean flag = this.updateById(postInfo);
+            if (flag){
+                throw new GlobalException(new Result<>().error(BusinessFailCode.DATA_FETCH_ERROR).message("更新失败"));
+            }
+        }
     }
 }

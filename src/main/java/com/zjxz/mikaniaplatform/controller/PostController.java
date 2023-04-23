@@ -6,11 +6,13 @@ import com.zjxz.mikaniaplatform.constants.DirectoryName;
 import com.zjxz.mikaniaplatform.enums.BusinessFailCode;
 import com.zjxz.mikaniaplatform.exception.GlobalException;
 import com.zjxz.mikaniaplatform.model.dto.PostInfoAddRequest;
+import com.zjxz.mikaniaplatform.model.dto.PostInfoUpdateRequest;
 import com.zjxz.mikaniaplatform.model.dto.PostInfoUploadStatusRequest;
 import com.zjxz.mikaniaplatform.model.dto.PostInfoUploadStatusResponse;
 import com.zjxz.mikaniaplatform.model.entity.PageResult;
 import com.zjxz.mikaniaplatform.model.entity.Result;
 import com.zjxz.mikaniaplatform.model.vo.PostInfoVO;
+import com.zjxz.mikaniaplatform.model.vo.UserPostInfoVO;
 import com.zjxz.mikaniaplatform.service.PostInfoService;
 import com.zjxz.mikaniaplatform.util.MyFileUtil;
 import io.swagger.annotations.ApiOperation;
@@ -47,7 +49,7 @@ public class PostController {
     @Autowired
     private PostInfoService postInfoService;
 
-    @ApiOperation("添加帖子")
+    @ApiOperation("添加帖子(前端调用)")
     @PostMapping("/addPost")
     public Result addPost(
             @RequestPart(value = "file")
@@ -55,6 +57,7 @@ public class PostController {
             MultipartFile file,
             @Parameter(description = "帖子添加请求", required = true)
             @NotEmpty
+            @RequestBody
             PostInfoAddRequest postAddRequest
     ) {
         var url = "";
@@ -79,26 +82,30 @@ public class PostController {
         return new Result<>().success().message("上传成功").data(url);
     }
 
-    @ApiOperation("更新帖子状态")
+
+    @ApiOperation("更新帖子状态(人工智能调用)")
     @PostMapping("/uploadStatus")
     public Result uploadStatus(
+            @RequestBody
             @Parameter(description = "帖子更新请求", required = true)
             @NotEmpty
-            PostInfoUploadStatusRequest postInfoUploadStatusRequest
+            List<PostInfoUploadStatusRequest> postInfoUploadStatusRequestList
     )
     {
-        postInfoService.uploadStatus(postInfoUploadStatusRequest);
+        postInfoService.uploadStatus(postInfoUploadStatusRequestList);
         return new Result<>().success().message("更新成功");
     }
 
-    @ApiOperation("获取帖子url")
+
+    @ApiOperation("获取帖子url(人工智能调用)")
     @GetMapping("/getUrl")
     public Result<List<PostInfoUploadStatusResponse>> getUrl() {
-        List<PostInfoUploadStatusResponse> list = postInfoService.getUrl();
+        var list = postInfoService.getUrl();
         return new Result<List<PostInfoUploadStatusResponse>>().success().message("获取成功").data(list);
     }
 
-    @ApiOperation("获取帖子信息")
+
+    @ApiOperation("获取帖子信息(前端调用)")
     @PostMapping("/get/{current}/{size}")
     public Result<PageResult<PostInfoVO>> get(
             @PathVariable
@@ -111,7 +118,54 @@ public class PostController {
             int size
     )
     {
-        PageResult<PostInfoVO> list = postInfoService.get(current, size);
+        var list = postInfoService.get(current, size);
         return new Result<PageResult<PostInfoVO>>().success().message("获取成功").data(list);
+    }
+
+
+    @ApiOperation("查看用户帖子(前端调用)")
+    @PostMapping("/get/{current}/{size}")
+    public Result<PageResult<UserPostInfoVO>> getUserPost(
+            @PathVariable
+            @Parameter(description = "当前页", required = true)
+            @NotEmpty
+            int current,
+            @PathVariable
+            @Parameter(description = "页容量", required = true)
+            @NotEmpty
+            int size
+    )
+    {
+        var list = postInfoService.getUserPost(current, size);
+        return new Result<PageResult<UserPostInfoVO>>().success().message("获取成功").data(list);
+    }
+
+
+    @ApiOperation("修改用户帖子(前端调用)")
+    @PostMapping("/update")
+    public Result updatePost(
+            @Parameter(description = "帖子更新请求", required = true)
+            @NotEmpty
+            @RequestBody
+            PostInfoUpdateRequest postInfoUpdateRequest
+
+    )
+    {
+        postInfoService.updateUserPost(postInfoUpdateRequest);
+        return new Result<>().success().message("修改成功");
+    }
+
+
+    @ApiOperation("删除帖子(前端调用)")
+    @DeleteMapping("/{id}")
+    public Result updatePost(
+            @PathVariable
+            @Parameter(description = "帖子id", required = true)
+            @NotEmpty
+            int id
+    )
+    {
+        postInfoService.removeById(id);
+        return new Result<>().success().message("删除成功");
     }
 }

@@ -1,29 +1,16 @@
-package com.zjxz.mikaniaplatform.model.entity;
+package com.zjxz.mikaniaplatform.model.vo;
 
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
-import java.io.Serializable;
 import java.util.Date;
 
 /**
- * 发布信息表
- * @TableName post_info
+ * @author hzzzzzy
+ * @date 2023/4/22
+ * @description 帖子返回vo
  */
-@TableName(value ="post_info")
 @Data
-public class PostInfo implements Serializable {
-    /**
-     * 发布信息编号
-     */
-    private Integer id;
-
-    /**
-     * 用户编号
-     */
-    private Integer userId;
-
+public class UserPostInfoVO {
     /**
      * 发布时间
      */
@@ -59,6 +46,5 @@ public class PostInfo implements Serializable {
      */
     private String url;
 
-    @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 }
