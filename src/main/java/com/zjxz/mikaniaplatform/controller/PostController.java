@@ -35,8 +35,8 @@ import static com.zjxz.mikaniaplatform.util.MultipartFileToFileUtils.multipartFi
 
 /**
  * @author hzzzzzy
- * @date 2023/4/5
- * @description 文件控制器
+ * @date 2023/4/21
+ * @description 帖子控制器
  */
 @Tag(name = "1-帖子管理")
 @CrossOrigin

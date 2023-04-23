@@ -84,7 +84,7 @@ public class CrawlGovernmentPolicy {
                     item = PopularizationScience.builder()
                             .title(title)
                             .url(href)
-                            .date(format.parse(date))
+                            .time(format.parse(date))
                             .build();
                 } catch (ParseException e) {
                     throw new GlobalException(new Result<>().error(BusinessFailCode.OBJECT_TYPE_ERROR).message("类型转换失败"));
