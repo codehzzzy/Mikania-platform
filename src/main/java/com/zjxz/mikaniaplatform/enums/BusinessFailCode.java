@@ -48,7 +48,31 @@ public enum BusinessFailCode implements ResultCode {
     /**
      * 对象类型错误
      */
-    OBJECT_TYPE_ERROR(3006, "对象类型错误");
+    OBJECT_TYPE_ERROR(3006, "对象类型错误"),
+
+
+    /**
+     * 用户名或密码错误
+     */
+    LOGIN_DATA_ERROR(4000,"用户名或密码错误"),
+
+
+    /**
+     * 密码与确认密码不匹配
+     */
+    REGISTER_PASSWORD_ERROR(4001,"密码与确认密码不匹配"),
+    /**
+     * 注册的用户名已存在
+     */
+    REGISTER_USERNAME_EXIST(4002,"注册的用户名已存在"),
+
+    OLD_PASSWORD_ERROR(4003,"旧密码错误"),
+
+
+
+    ;
+
+
 
     /**
      * 编号

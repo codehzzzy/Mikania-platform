@@ -50,16 +50,19 @@ public class PostController {
     private PostInfoService postInfoService;
 
     @ApiOperation("添加帖子(前端调用)")
-    @PostMapping("/addPost")
+    @PostMapping("/add")
     public Result addPost(
-            @RequestPart(value = "file")
             @Parameter(description = "文件", required = true)
+            @RequestBody
+            @NotEmpty
+            @RequestPart(value = "file")
             MultipartFile file,
             @Parameter(description = "帖子添加请求", required = true)
             @NotEmpty
             @RequestBody
             PostInfoAddRequest postAddRequest
     ) {
+        // FIXME 存在bug knife4j调试时没有文件阈
         var url = "";
         var fileName = file.getOriginalFilename();
         // 拼接文件名
@@ -92,6 +95,7 @@ public class PostController {
             List<PostInfoUploadStatusRequest> postInfoUploadStatusRequestList
     )
     {
+        // todo 待测试
         postInfoService.uploadStatus(postInfoUploadStatusRequestList);
         return new Result<>().success().message("更新成功");
     }
@@ -100,13 +104,14 @@ public class PostController {
     @ApiOperation("获取帖子url(人工智能调用)")
     @GetMapping("/getUrl")
     public Result<List<PostInfoUploadStatusResponse>> getUrl() {
+        // todo 待测试
         var list = postInfoService.getUrl();
         return new Result<List<PostInfoUploadStatusResponse>>().success().message("获取成功").data(list);
     }
 
 
     @ApiOperation("获取帖子信息(前端调用)")
-    @PostMapping("/get/{current}/{size}")
+    @PostMapping("/getAll/{current}/{size}")
     public Result<PageResult<PostInfoVO>> get(
             @PathVariable
             @Parameter(description = "当前页", required = true)
@@ -118,13 +123,14 @@ public class PostController {
             int size
     )
     {
+        // todo 待测试
         var list = postInfoService.get(current, size);
         return new Result<PageResult<PostInfoVO>>().success().message("获取成功").data(list);
     }
 
 
     @ApiOperation("查看用户帖子(前端调用)")
-    @PostMapping("/get/{current}/{size}")
+    @PostMapping("/getByUser/{current}/{size}")
     public Result<PageResult<UserPostInfoVO>> getUserPost(
             @PathVariable
             @Parameter(description = "当前页", required = true)
@@ -136,6 +142,7 @@ public class PostController {
             int size
     )
     {
+        // todo 待测试
         var list = postInfoService.getUserPost(current, size);
         return new Result<PageResult<UserPostInfoVO>>().success().message("获取成功").data(list);
     }
@@ -148,9 +155,9 @@ public class PostController {
             @NotEmpty
             @RequestBody
             PostInfoUpdateRequest postInfoUpdateRequest
-
     )
     {
+        // todo 待测试
         postInfoService.updateUserPost(postInfoUpdateRequest);
         return new Result<>().success().message("修改成功");
     }
@@ -165,6 +172,7 @@ public class PostController {
             int id
     )
     {
+        // todo 待测试
         postInfoService.removeById(id);
         return new Result<>().success().message("删除成功");
     }

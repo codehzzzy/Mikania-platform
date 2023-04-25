@@ -25,4 +25,9 @@ public interface Common {
      * 测试文件名
      */
     String TEST_DIRECTORY_NAME = "test";
+
+    /**
+     * 请求中的token
+     */
+    String HEADER_TOKEN = "authorization";
 }
