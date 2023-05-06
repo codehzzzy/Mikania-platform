@@ -5,4 +5,4 @@
 基于jdk17进行开发
 
 
-技术栈：Redis，SpringBoot，EasyExcel，阿里云OSS
+技术栈：Redis，SpringBoot，EasyExcel，阿里云OSS，WebSocket
