@@ -13,20 +13,19 @@ File Encoding         : 65001
 Date: 2023-04-23 20:50:55
 */
 
-SET FOREIGN_KEY_CHECKS=0;
+-- SET FOREIGN_KEY_CHECKS=0;
 
 -- ----------------------------
 -- Table structure for popularization_science
 -- ----------------------------
 DROP TABLE IF EXISTS `popularization_science`;
 CREATE TABLE `popularization_science` (
-  `id` int NOT NULL COMMENT '科普信息编号',
-  `title` varchar(255) DEFAULT NULL COMMENT '文章标题',
-  `url` varchar(255) DEFAULT NULL COMMENT '文章路径',
-  `time` date DEFAULT NULL COMMENT '文章发表时间',
-  `type` tinyint DEFAULT NULL COMMENT '帖子类型(1:危害;2:政策;3:防护手段;4:植株形态)',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COMMENT='科普信息表';
+  `id`      int   COMMENT '科普信息编号',
+  `title`   varchar(255) DEFAULT NULL COMMENT '文章标题',
+  `url`     varchar(255) DEFAULT NULL COMMENT '文章路径',
+  `time`    date DEFAULT NULL COMMENT '文章发表时间',
+  `type`    tinyint DEFAULT NULL COMMENT '帖子类型(1:危害;2:政策;3:防护手段;4:植株形态)',
+) ENGINE = InnoDB DEFAULT CHARCTER SET=utf8mb4 COMMENT='科普信息表';
 
 -- ----------------------------
 -- Records of popularization_science
@@ -64,8 +63,3 @@ CREATE TABLE `user` (
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3 COMMENT='用户表';
 
--- ----------------------------
--- Records of user
--- ----------------------------
-INSERT INTO `user` VALUES ('1', 'wakuwaku2', 'dcf1744f38f5041c827a5ff31467e53a');
-INSERT INTO `user` VALUES ('2', 'wakuwaku', 'dcf1744f38f5041c827a5ff31467e53a');

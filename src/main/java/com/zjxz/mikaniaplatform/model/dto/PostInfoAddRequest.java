@@ -1,24 +1,27 @@
 package com.zjxz.mikaniaplatform.model.dto;
 
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+
 /**
  * @author hzzzzzy
  * @date 2023/4/22
  * @description 帖子上传请求
  */
-public record PostInfoAddRequest(
-        /**
-         * 省名称
-         */
-        String province,
+@ApiModel("帖子上传请求类")
+@Data
+public class PostInfoAddRequest {
+    @ApiModelProperty("省名称")
+    private String province;
 
-        /**
-         * 城市名称
-         */
-        String city,
+    @ApiModelProperty("城市名称")
+    private String city;
 
-        /**
-         * 详细地址
-         */
-        String detail
-) {}
+    @ApiModelProperty("详细地址")
+    private String detail;
+
+    @ApiModelProperty("文件url")
+    private String url;
+}

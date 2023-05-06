@@ -5,10 +5,7 @@ import com.zjxz.mikaniaplatform.constants.BucketName;
 import com.zjxz.mikaniaplatform.constants.DirectoryName;
 import com.zjxz.mikaniaplatform.enums.BusinessFailCode;
 import com.zjxz.mikaniaplatform.exception.GlobalException;
-import com.zjxz.mikaniaplatform.model.dto.PostInfoAddRequest;
-import com.zjxz.mikaniaplatform.model.dto.PostInfoUpdateRequest;
-import com.zjxz.mikaniaplatform.model.dto.PostInfoUploadStatusRequest;
-import com.zjxz.mikaniaplatform.model.dto.PostInfoUploadStatusResponse;
+import com.zjxz.mikaniaplatform.model.dto.*;
 import com.zjxz.mikaniaplatform.model.entity.PageResult;
 import com.zjxz.mikaniaplatform.model.entity.Result;
 import com.zjxz.mikaniaplatform.model.vo.PostInfoVO;
@@ -19,17 +16,16 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
-import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotEmpty;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-
 import static com.zjxz.mikaniaplatform.util.MultipartFileToFileUtils.multipartFileToFile;
 
 
@@ -52,17 +48,25 @@ public class PostController {
     @ApiOperation("添加帖子(前端调用)")
     @PostMapping("/add")
     public Result addPost(
-            @Parameter(description = "文件", required = true)
-            @RequestBody
-            @NotEmpty
-            @RequestPart(value = "file")
-            MultipartFile file,
             @Parameter(description = "帖子添加请求", required = true)
             @NotEmpty
             @RequestBody
-            PostInfoAddRequest postAddRequest
+            PostInfoAddRequest postAddRequest,
+            HttpServletRequest request
     ) {
-        // FIXME 存在bug knife4j调试时没有文件阈
+        postInfoService.addPost(postAddRequest, request);
+        return new Result<>().success().message("上传成功");
+    }
+
+
+    @ApiOperation("上传文件(前端调用)")
+    @PostMapping("/upload")
+    public Result upload(
+            @Parameter(description = "文件", required = true)
+            @NotEmpty
+            @RequestPart(value = "file")
+            MultipartFile file
+    ) {
         var url = "";
         var fileName = file.getOriginalFilename();
         // 拼接文件名
@@ -81,7 +85,6 @@ public class PostController {
         } catch (Exception e) {
             throw new GlobalException(new Result<>().error(BusinessFailCode.PARAMETER_ERROR).message("MultipartFile转File失败"));
         }
-        postInfoService.addPost(postAddRequest, url);
         return new Result<>().success().message("上传成功").data(url);
     }
 
@@ -165,7 +168,7 @@ public class PostController {
 
     @ApiOperation("删除帖子(前端调用)")
     @DeleteMapping("/{id}")
-    public Result updatePost(
+    public Result deletePost(
             @PathVariable
             @Parameter(description = "帖子id", required = true)
             @NotEmpty

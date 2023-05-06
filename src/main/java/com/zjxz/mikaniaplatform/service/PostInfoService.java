@@ -11,6 +11,7 @@ import com.zjxz.mikaniaplatform.model.entity.Result;
 import com.zjxz.mikaniaplatform.model.vo.PostInfoVO;
 import com.zjxz.mikaniaplatform.model.vo.UserPostInfoVO;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -24,10 +25,9 @@ public interface PostInfoService extends IService<PostInfo> {
      * 添加帖子
      *
      * @param postAddRequest 帖子添加请求
-     * @param url 图片/视频 url
      * @return 是否成功
      */
-    void addPost(PostInfoAddRequest postAddRequest, String url);
+    void addPost(PostInfoAddRequest postAddRequest, HttpServletRequest request);
 
     /**
      * 更新帖子状态

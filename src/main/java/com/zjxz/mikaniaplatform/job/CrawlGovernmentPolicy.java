@@ -15,6 +15,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -35,6 +36,11 @@ import java.util.concurrent.Executors;
 public class CrawlGovernmentPolicy {
     @Autowired
     private PopularizationScienceService popularizationScienceService;
+    /**
+     * 爬取网站的url
+     */
+    @Value("crawler.url")
+    private String url;
 
     /**
      * 开启线程池
@@ -61,7 +67,7 @@ public class CrawlGovernmentPolicy {
             WebClient webClient = WebClientUtils.getWebClient();
             HtmlPage page = null;
             try {
-                page = webClient.getPage("http://search.gd.gov.cn/search/local/174?sort=time&keywords=%E8%96%87%E7%94%98%E8%8F%8A");
+                page = webClient.getPage(url);
             } catch (IOException e) {
                 throw new GlobalException(new Result<>().error(BusinessFailCode.PARAMETER_ERROR).message("获取链接失败"));
             }

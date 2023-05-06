@@ -1,26 +1,31 @@
 package com.zjxz.mikaniaplatform.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.google.gson.Gson;
+import com.zjxz.mikaniaplatform.constants.Common;
+import com.zjxz.mikaniaplatform.constants.RedisConstant;
 import com.zjxz.mikaniaplatform.constants.Status;
 import com.zjxz.mikaniaplatform.enums.BusinessFailCode;
 import com.zjxz.mikaniaplatform.exception.GlobalException;
 import com.zjxz.mikaniaplatform.mapper.PostInfoMapper;
-import com.zjxz.mikaniaplatform.model.dto.PostInfoAddRequest;
-import com.zjxz.mikaniaplatform.model.dto.PostInfoUpdateRequest;
-import com.zjxz.mikaniaplatform.model.dto.PostInfoUploadStatusRequest;
-import com.zjxz.mikaniaplatform.model.dto.PostInfoUploadStatusResponse;
+import com.zjxz.mikaniaplatform.model.dto.*;
 import com.zjxz.mikaniaplatform.model.entity.PageResult;
 import com.zjxz.mikaniaplatform.model.entity.PostInfo;
 import com.zjxz.mikaniaplatform.model.entity.Result;
+import com.zjxz.mikaniaplatform.model.entity.User;
 import com.zjxz.mikaniaplatform.model.vo.PostInfoVO;
 import com.zjxz.mikaniaplatform.model.vo.UserPostInfoVO;
 import com.zjxz.mikaniaplatform.service.PostInfoService;
 import com.zjxz.mikaniaplatform.service.UserService;
+import com.zjxz.mikaniaplatform.util.UserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -36,20 +41,26 @@ import static com.zjxz.mikaniaplatform.util.User2ThreadLocalUtils.getUser;
 * @createDate 2023-04-21 16:54:07
 */
 @Service
+@SuppressWarnings("all")
 public class PostInfoServiceImpl extends ServiceImpl<PostInfoMapper, PostInfo>
     implements PostInfoService {
     @Autowired
     private UserService userService;
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
+    @Autowired
+    private UserUtil userUtil;
 
 
     @Override
-    public void addPost(PostInfoAddRequest postAddRequest, String url) {
-        var postInfo = copyProperties(postAddRequest, PostInfo.class);
+    public void addPost(PostInfoAddRequest postAddRequest, HttpServletRequest request) {
+        var postInfo = BeanUtil.copyProperties(postAddRequest, PostInfo.class);
         postInfo.setStatus(Status.WAIT);
-        postInfo.setUrl(url);
-        postInfo.setUserId(getUser().getId());
+        postInfo.setUrl(postAddRequest.getUrl());
+        User currentUser = userUtil.getCurrentUser(request);
+        postInfo.setUserId(currentUser.getId());
         var flag = this.save(postInfo);
-        if (flag){
+        if (!flag){
             throw new GlobalException(new Result<>().error(BusinessFailCode.PARAMETER_ERROR).message("帖子添加失败"));
         }
     }

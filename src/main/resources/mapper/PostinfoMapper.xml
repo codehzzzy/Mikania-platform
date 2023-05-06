@@ -5,7 +5,7 @@
 <mapper namespace="com.zjxz.mikaniaplatform.mapper.PostInfoMapper">
 
     <resultMap id="BaseResultMap" type="com.zjxz.mikaniaplatform.model.entity.PostInfo">
-            <result property="id" column="id" jdbcType="INTEGER"/>
+            <id property="id" column="id" jdbcType="INTEGER"/>
             <result property="userId" column="user_id" jdbcType="INTEGER"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
             <result property="proId" column="pro_id" jdbcType="INTEGER"/>
