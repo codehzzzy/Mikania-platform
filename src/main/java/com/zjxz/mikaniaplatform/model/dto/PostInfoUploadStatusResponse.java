@@ -1,5 +1,7 @@
 package com.zjxz.mikaniaplatform.model.dto;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @author hzzzzzy
@@ -7,6 +9,7 @@ import lombok.Data;
  * @description 帖子状态更新 response
  */
 @Data
+@NoArgsConstructor
 public class PostInfoUploadStatusResponse {
     /**
      * 发布信息编号

@@ -45,7 +45,7 @@ public class PostController {
     @Autowired
     private PostInfoService postInfoService;
 
-    @ApiOperation("添加帖子(前端调用)")
+    @ApiOperation(value = "添加帖子(前端调用)", tags = "1-帖子管理")
     @PostMapping("/add")
     public Result addPost(
             @Parameter(description = "帖子添加请求", required = true)
@@ -55,11 +55,11 @@ public class PostController {
             HttpServletRequest request
     ) {
         postInfoService.addPost(postAddRequest, request);
-        return new Result<>().success().message("上传成功");
+        return new Result<>().success().message("添加成功");
     }
 
 
-    @ApiOperation("上传文件(前端调用)")
+    @ApiOperation(value = "上传文件(前端调用)", tags = "1-帖子管理")
     @PostMapping("/upload")
     public Result upload(
             @Parameter(description = "文件", required = true)
@@ -89,7 +89,7 @@ public class PostController {
     }
 
 
-    @ApiOperation("更新帖子状态(人工智能调用)")
+    @ApiOperation(value = "更新帖子状态(人工智能调用)", tags = "1-帖子管理")
     @PostMapping("/uploadStatus")
     public Result uploadStatus(
             @RequestBody
@@ -104,16 +104,15 @@ public class PostController {
     }
 
 
-    @ApiOperation("获取帖子url(人工智能调用)")
+    @ApiOperation(value = "获取帖子url(人工智能调用)", tags = "1-帖子管理")
     @GetMapping("/getUrl")
     public Result<List<PostInfoUploadStatusResponse>> getUrl() {
-        // todo 待测试
         var list = postInfoService.getUrl();
         return new Result<List<PostInfoUploadStatusResponse>>().success().message("获取成功").data(list);
     }
 
 
-    @ApiOperation("获取帖子信息(前端调用)")
+    @ApiOperation(value = "获取帖子信息(前端调用)", tags = "1-帖子管理")
     @PostMapping("/getAll/{current}/{size}")
     public Result<PageResult<PostInfoVO>> get(
             @PathVariable
@@ -126,13 +125,12 @@ public class PostController {
             int size
     )
     {
-        // todo 待测试
         var list = postInfoService.get(current, size);
         return new Result<PageResult<PostInfoVO>>().success().message("获取成功").data(list);
     }
 
 
-    @ApiOperation("查看用户帖子(前端调用)")
+    @ApiOperation(value = "查看用户帖子(前端调用)", tags = "1-帖子管理")
     @PostMapping("/getByUser/{current}/{size}")
     public Result<PageResult<UserPostInfoVO>> getUserPost(
             @PathVariable
@@ -142,16 +140,16 @@ public class PostController {
             @PathVariable
             @Parameter(description = "页容量", required = true)
             @NotEmpty
-            int size
+            int size,
+            HttpServletRequest request
     )
     {
-        // todo 待测试
-        var list = postInfoService.getUserPost(current, size);
+        var list = postInfoService.getUserPost(current, size, request);
         return new Result<PageResult<UserPostInfoVO>>().success().message("获取成功").data(list);
     }
 
 
-    @ApiOperation("修改用户帖子(前端调用)")
+    @ApiOperation(value = "修改用户帖子(前端调用)", tags = "1-帖子管理")
     @PostMapping("/update")
     public Result updatePost(
             @Parameter(description = "帖子更新请求", required = true)
@@ -160,13 +158,12 @@ public class PostController {
             PostInfoUpdateRequest postInfoUpdateRequest
     )
     {
-        // todo 待测试
         postInfoService.updateUserPost(postInfoUpdateRequest);
         return new Result<>().success().message("修改成功");
     }
 
 
-    @ApiOperation("删除帖子(前端调用)")
+    @ApiOperation(value = "删除帖子(前端调用)", tags = "1-帖子管理")
     @DeleteMapping("/{id}")
     public Result deletePost(
             @PathVariable
@@ -175,7 +172,6 @@ public class PostController {
             int id
     )
     {
-        // todo 待测试
         postInfoService.removeById(id);
         return new Result<>().success().message("删除成功");
     }

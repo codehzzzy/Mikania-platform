@@ -39,7 +39,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     private StringRedisTemplate stringRedisTemplate;
 
     @Override
-    public boolean doLogin(String username, String password) {
+    public String doLogin(String username, String password) {
+        String token = "";
         String encryptPassword = DigestUtils.md5DigestAsHex((SALT + password).getBytes());
         // 根据username和password查对应用户
         val queryWrapper = new LambdaQueryWrapper<User>();
@@ -47,17 +48,16 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         queryWrapper.eq(User::getPassword,encryptPassword);
         val user = this.getOne(queryWrapper);
         if(BeanUtil.isEmpty(user)){
-            // 找不到对应用户
-            return false;
+            throw new GlobalException(new Result<>().error(BusinessFailCode.PARAMETER_ERROR).message("找不到对应用户"));
         }else {
             // 生成token,存进redis  User2ThreadLocalUtils
             try {
-                String token = JwtUtil.createToken(String.valueOf(user.getId()),user.getUsername());
+                token = JwtUtil.createToken(String.valueOf(user.getId()),user.getUsername());
                 stringRedisTemplate.opsForValue().set(RedisConstant.USER_LOGIN_TOKEN + token, JSONUtil.toJsonStr(user),USER_LOGIN_TOKEN_EXPIRE, TimeUnit.SECONDS);
             } catch (UnsupportedEncodingException e) {
                 throw new GlobalException(new Result<>().error(BusinessFailCode.PARAMETER_ERROR).message("存入token失败"));
             }
-            return true;
+            return token;
         }
     }
 

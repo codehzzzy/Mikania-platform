@@ -1,9 +1,9 @@
 package com.zjxz.mikaniaplatform.model.dto;
-
-
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @author hzzzzzy
@@ -12,12 +12,13 @@ import lombok.Data;
  */
 @ApiModel("帖子上传请求类")
 @Data
+@NoArgsConstructor
 public class PostInfoAddRequest {
-    @ApiModelProperty("省名称")
-    private String province;
+    @ApiModelProperty("省编号")
+    private Integer provinceId;
 
-    @ApiModelProperty("城市名称")
-    private String city;
+    @ApiModelProperty("城市编号")
+    private Integer cityId;
 
     @ApiModelProperty("详细地址")
     private String detail;

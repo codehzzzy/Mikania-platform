@@ -19,7 +19,7 @@ public interface UserService extends IService<User> {
      * @param password 密码
      * @return
      */
-    boolean doLogin(String username,String password);
+    String doLogin(String username,String password);
 
     /**
      * 登出

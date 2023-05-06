@@ -68,14 +68,12 @@ public class PostInfoServiceImpl extends ServiceImpl<PostInfoMapper, PostInfo>
 
     @Override
     public void uploadStatus(List<PostInfoUploadStatusRequest> postInfoUploadStatusRequestList) {
-        var postInfoList = new ArrayList<PostInfo>();
-        postInfoUploadStatusRequestList.stream().peek(request->{
-            PostInfo postInfo = copyProperties(request, PostInfo.class);
-            postInfoList.add(postInfo);
-        });
-        var flag = this.updateBatchById(postInfoList);
-        if (flag){
-            throw new GlobalException(new Result<>().error(BusinessFailCode.PARAMETER_ERROR).message("帖子添加失败"));
+        List<PostInfo> infoList = postInfoUploadStatusRequestList.stream().map(request -> {
+            return BeanUtil.copyProperties(request, PostInfo.class);
+        }).collect(Collectors.toList());
+        var flag = this.updateById(infoList.get(0));
+        if (!flag){
+            throw new GlobalException(new Result<>().error(BusinessFailCode.PARAMETER_ERROR).message("帖子更新失败"));
         }
     }
 
@@ -110,9 +108,10 @@ public class PostInfoServiceImpl extends ServiceImpl<PostInfoMapper, PostInfo>
 
 
     @Override
-    public PageResult<UserPostInfoVO> getUserPost(int current, int size) {
+    public PageResult<UserPostInfoVO> getUserPost(int current, int size, HttpServletRequest request) {
+        Integer userId = userUtil.getCurrentUser(request).getId();
         var postInfoList = this.list(
-                new LambdaQueryWrapper<PostInfo>().eq(PostInfo::getUserId, getUser().getId())
+                new LambdaQueryWrapper<PostInfo>().eq(PostInfo::getUserId, userId)
         );
         // 封装为VO
         var userPostVoList = Eneity2VoOrDTO(postInfoList, UserPostInfoVO.class);
@@ -126,15 +125,15 @@ public class PostInfoServiceImpl extends ServiceImpl<PostInfoMapper, PostInfo>
 
     @Override
     public void updateUserPost(PostInfoUpdateRequest postInfoUpdateRequest) {
-        String url = postInfoUpdateRequest.url();
+        String url = postInfoUpdateRequest.getUrl();
         PostInfo postInfo = this.getOne(
-                new LambdaQueryWrapper<PostInfo>().eq(PostInfo::getId, postInfoUpdateRequest.id())
+                new LambdaQueryWrapper<PostInfo>().eq(PostInfo::getId, postInfoUpdateRequest.getId())
         );
         if (!postInfo.getUrl().equals(url)) {
             postInfo.setStatus(Status.WAIT);
             postInfo.setUrl(url);
             boolean flag = this.updateById(postInfo);
-            if (flag){
+            if (!flag){
                 throw new GlobalException(new Result<>().error(BusinessFailCode.DATA_FETCH_ERROR).message("更新失败"));
             }
         }

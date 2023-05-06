@@ -2,6 +2,7 @@ package com.zjxz.mikaniaplatform.controller;
 
 
 import com.zjxz.mikaniaplatform.enums.BusinessFailCode;
+import com.zjxz.mikaniaplatform.exception.GlobalException;
 import com.zjxz.mikaniaplatform.model.dto.UserAddRequest;
 import com.zjxz.mikaniaplatform.model.dto.UserAltPassAddRequest;
 import com.zjxz.mikaniaplatform.model.dto.UserRegAddRequest;
@@ -37,11 +38,11 @@ public class UserController {
             @NotEmpty
             UserAddRequest userAddRequest
     ){
-        if(!userService.doLogin(userAddRequest.username(), userAddRequest.password())){
-            return new Result<>().fail(BusinessFailCode.LOGIN_DATA_ERROR);
-        }else {
-            return new Result().success().message("登录成功");
+        String token = userService.doLogin(userAddRequest.getUsername(), userAddRequest.getPassword());
+        if ("".equals(token)){
+            throw new GlobalException(new Result<>().error(BusinessFailCode.PARAMETER_ERROR).message("token为空"));
         }
+        return new Result<String>().success().message("登录成功").data(token);
     }
 
 
@@ -61,7 +62,7 @@ public class UserController {
             @NotEmpty
             UserRegAddRequest userRegAddRequest
     ){
-        userService.doRegister(userRegAddRequest.username(), userRegAddRequest.password(), userRegAddRequest.verifyPassword());
+        userService.doRegister(userRegAddRequest.getUsername(), userRegAddRequest.getPassword(), userRegAddRequest.getVerifyPassword());
         return new Result<>().success().message("注册成功");
     }
 
@@ -74,7 +75,7 @@ public class UserController {
             UserAltPassAddRequest userAltPassAddRequest,
             HttpServletRequest request
     ){
-        userService.doAlter(request,userAltPassAddRequest.oldPassword(),userAltPassAddRequest.newPassword(),userAltPassAddRequest.newVerifyPassword());
+        userService.doAlter(request,userAltPassAddRequest.getOldPassword(),userAltPassAddRequest.getNewPassword(),userAltPassAddRequest.getNewVerifyPassword());
         return new Result<>().success().message("修改成功");
     }
 

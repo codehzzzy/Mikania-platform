@@ -61,7 +61,7 @@ public interface PostInfoService extends IService<PostInfo> {
      * @param size 页面容量
      * @return 对象列表
      */
-    PageResult<UserPostInfoVO> getUserPost(int current, int size);
+    PageResult<UserPostInfoVO> getUserPost(int current, int size, HttpServletRequest request);
 
 
     /**

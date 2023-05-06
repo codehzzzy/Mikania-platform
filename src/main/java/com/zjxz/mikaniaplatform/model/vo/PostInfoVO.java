@@ -28,7 +28,7 @@ public class PostInfoVO{
     /**
      * 省编号
      */
-    private Integer proId;
+    private Integer provinceId;
 
     /**
      * 市编号

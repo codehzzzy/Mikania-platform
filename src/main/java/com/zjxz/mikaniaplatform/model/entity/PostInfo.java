@@ -40,7 +40,7 @@ public class PostInfo implements Serializable {
      * 省编号
      */
     @TableField(value = "pro_id")
-    private Integer proId;
+    private Integer provinceId;
 
     /**
      * 市编号
