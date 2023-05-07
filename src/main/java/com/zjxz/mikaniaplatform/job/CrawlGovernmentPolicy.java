@@ -1,6 +1,7 @@
 package com.zjxz.mikaniaplatform.job;
 
 import com.alibaba.excel.util.ListUtils;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.zjxz.mikaniaplatform.enums.BusinessFailCode;
@@ -86,6 +87,8 @@ public class CrawlGovernmentPolicy {
                 log.info("标题为：{}", title);
                 log.info("日期为：{}", date);
                 PopularizationScience item;
+                var queryWrapper = new LambdaQueryWrapper<>();
+
                 try {
                     item = PopularizationScience.builder()
                             .title(title)
