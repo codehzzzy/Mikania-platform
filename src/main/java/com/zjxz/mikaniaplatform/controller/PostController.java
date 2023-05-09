@@ -1,6 +1,7 @@
 package com.zjxz.mikaniaplatform.controller;
 
 import cn.hutool.core.io.FileUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.zjxz.mikaniaplatform.constants.BucketName;
 import com.zjxz.mikaniaplatform.constants.DirectoryName;
 import com.zjxz.mikaniaplatform.enums.BusinessFailCode;
@@ -47,7 +48,7 @@ public class PostController {
 
     @ApiOperation(value = "添加帖子(前端调用)", tags = "1-帖子管理")
     @PostMapping("/add")
-    public Result addPost(
+    public Result addPost( 
             @Parameter(description = "帖子添加请求", required = true)
             @NotEmpty
             @RequestBody

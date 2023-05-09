@@ -16,6 +16,7 @@ public class ListenUpdatePostAspect {
 
     @AfterReturning("execution(* com.zjxz.mikaniaplatform.service.PostInfoService.updateUserPost(..))")
     public void afterMethod(JoinPoint joinPoint) {
-
+        // todo 识别成功
+        // 更新数据
     }
 }

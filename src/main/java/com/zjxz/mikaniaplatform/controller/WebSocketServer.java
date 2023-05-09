@@ -13,7 +13,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * @author hzzzzzy
  * @date 2023/5/6
  * @description WebSocket服务端
- * WebSocket服务器为 ws://localhost:7529/websocket
+ * WebSocket服务器为 ws://localhost:7529/api/websocket
  */
 @ServerEndpoint(value = "/websocket")
 @Component
@@ -72,5 +72,9 @@ public class WebSocketServer {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static CopyOnWriteArraySet<WebSocketServer> getWebSocketSet() {
+        return WEBSOCKET_SET;
     }
 }

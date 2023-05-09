@@ -88,7 +88,7 @@ public class CrawlGovernmentPolicy {
                 log.info("日期为：{}", date);
                 PopularizationScience item;
                 var queryWrapper = new LambdaQueryWrapper<>();
-
+                // todo 排除数据库相同的信息
                 try {
                     item = PopularizationScience.builder()
                             .title(title)
